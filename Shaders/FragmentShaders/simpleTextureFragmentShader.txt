@@ -1,0 +1,26 @@
+#version 330
+
+in vec3 LightIntensity;
+in vec2 TextureCoords;
+in vec3 FragPos;
+
+uniform vec3 flashlight_position;
+uniform vec3 flashlight_rotation;
+uniform float cutoff_factor;
+uniform sampler2D texture;
+void main(){
+	vec4 texColor = texture(texture, TextureCoords);
+	//gl_FragColor = vec4(texColor.rgb * LightIntensity, texColor.a);
+
+	vec3 lightDirToFragment = normalize(flashlight_position - FragPos);
+	float spotFactor = dot(lightDirToFragment, normalize(-flashlight_rotation));
+	if (spotFactor > cutoff_factor){
+		float intensity = (1.0 - (1.0 - spotFactor) / (1.0 - cutoff_factor));
+		vec3 NewLightIntensity = LightIntensity + vec3(0.5, 0.5, 0.5) * intensity;
+		gl_FragColor = vec4(texColor.rgb * NewLightIntensity, texColor.a);
+	}
+	else{
+		gl_FragColor = vec4(texColor.rgb * LightIntensity, texColor.a);
+	}
+	
+}

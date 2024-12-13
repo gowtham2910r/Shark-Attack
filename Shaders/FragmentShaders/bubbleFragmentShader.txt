@@ -1,0 +1,14 @@
+in vec3 Normal;       
+in vec3 FragPos; 
+
+uniform vec3 viewPos;
+uniform vec4 bgColor;
+
+void main() {
+    vec3 viewDir = normalize(FragPos - viewPos);
+    vec3 reflectDir = reflect(-viewDir, Normal);
+    vec4 reflection = bgColor;
+    vec4 baseColor = vec4(0.6, 0.6, 0.7, 0.3); // Slightly blue transparent color
+    vec4 finalColor = mix(baseColor, reflection, 0.5); // Combine base color and reflection
+    gl_FragColor = finalColor;
+}
